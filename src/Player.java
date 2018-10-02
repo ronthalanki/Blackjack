@@ -2,18 +2,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 
-class Player {
-    private ArrayList<Card> hand;
-    private ArrayList<Integer> score;
-    private int playerNumber;
-    private boolean playing;
+abstract class Player {
+    protected ArrayList<Card> hand;
+    protected ArrayList<Integer> score;
+    protected boolean playing;
+    protected int playerNumber;
+    protected int money;
+
+    Player(){
+        this.playerNumber = -1;
+        handReset();
+    }
 
     Player(int playerNumber) {
         this.playerNumber = playerNumber;
-        reset();
+        handReset();
     }
 
-    void reset() {
+    void handReset() {
         score = new ArrayList<Integer>();
         score.add(0);
 
@@ -21,7 +27,7 @@ class Player {
         playing = true;
     }
 
-    void addCard(Card c){
+    void addCard(Card c) {
         hand.add(c);
         updateCurrentScore(c);
     }
@@ -58,9 +64,8 @@ class Player {
         score = new ArrayList<Integer>(hashSet);
         Collections.sort(score);
 
-        if (score.size() == 0) {
-            playing = false;
-        }
+        //checks if all possible scores are bust
+        playing = isBust();
     }
 
     ArrayList<Integer> getScore() {
@@ -68,22 +73,7 @@ class Player {
     }
 
     int getBestScore() {
-        if (score.size() == 0) {
-            return 0;
-        } else {
-            return Collections.max(score);
-        }
-    }
-
-    boolean isBust(){
-        if (score.size() == 0) {
-            return true;
-        }
-        return false;
-    }
-
-    int getPlayerNumber() {
-        return playerNumber;
+        return Collections.max(score);
     }
 
     boolean isPlaying() {
@@ -94,30 +84,10 @@ class Player {
         playing = false;
     }
 
-    private String getViewDeckHelper() {
-        ArrayList<Integer> pScores = getScore();
-        if (isBust()) {
-            return "Current Score: Bust";
-        } else if (pScores.size() == 1) {
-            return "Current Score: " + pScores.get(0);
-        } else {
-            return "Current Scores: " + pScores;
+    boolean isBust() {
+        if (score.size() == 0) {
+            return false;
         }
-    }
-
-    String getViewDeck() {
-        if (playerNumber != -1) {
-            return "\nPlayer " + playerNumber + "'s Cards: " + hand + "\n" + getViewDeckHelper();
-        } else {
-            String returnVal = "\nDealer's Cards: [xxx of xxx, ";
-            for (int i = 1; i < hand.size(); i++) {
-                returnVal += hand.get(i);
-            }
-            return returnVal + "]";
-        }
-    }
-
-    String getViewDealerDeck() {
-        return "Dealer's Cards: " + hand + "\nScore: " + getBestScore();
+        return true;
     }
 }

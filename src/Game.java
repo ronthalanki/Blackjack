@@ -1,15 +1,15 @@
 class Game {
     private MainDeck mainDeck;
-    private Player[] players;
-    private Player dealer;
+    private Person[] people;
+    private Person dealer;
 
     Game (int numPlayers) {
-        players = new Player[numPlayers];
-        dealer = new Player(-1);
+        people = new Person[numPlayers];
+        dealer = new Person(-1);
         mainDeck = new MainDeck();
 
         for (int i = 0; i < numPlayers; i++) {
-            players[i] = new Player(i);
+            people[i] = new Person(i);
         }
     }
 
@@ -24,18 +24,18 @@ class Game {
         drawCard(dealer);
         drawCard(dealer);
 
-        for (Player p: players) {
+        for (Person p: people) {
             drawCard(p);
             drawCard(p);
         }
 
-        for (Player p: players) {
+        for (Person p: people) {
             while (p.isPlaying()) {
                 spaceBetweenSections();
-                System.out.println("\nPlayer " + p.getPlayerNumber() + " is playing");
+                System.out.println("\nPerson " + p.getPlayerNumber() + " is playing");
 
                 printCurrentState();
-                System.out.println("\nPlayer " + p.getPlayerNumber() + ": Do you want to hold (0) or draw (1)");
+                System.out.println("\nPerson " + p.getPlayerNumber() + ": Do you want to hold (0) or draw (1)");
 
                 int x = Input.getIntegerInput(0,2);
 
@@ -55,28 +55,28 @@ class Game {
         spaceBetweenSections();
         System.out.println(dealer.getViewDealerDeck());
 
-        for (Player p: players) {
+        for (Person p: people) {
             if (p.getBestScore() > dealer.getBestScore()) {
-                System.out.println("Player " + p.getPlayerNumber() + " wins!");
+                System.out.println("Person " + p.getPlayerNumber() + " wins!");
             }
         }
 
         System.out.println("End Round");
 
         dealer.reset();
-        for (Player p: players) {
+        for (Person p: people) {
             p.reset();
         }
     }
 
-    private void drawCard(Player p) {
+    private void drawCard(Person p) {
         Card c = mainDeck.drawCard();
         p.addCard(c);
     }
 
     private void printCurrentState() {
         System.out.println(dealer.getViewDeck());
-        for (Player p: players) {
+        for (Person p: people) {
             System.out.println(p.getViewDeck());
         }
     }
