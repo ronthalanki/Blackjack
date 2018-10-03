@@ -1,25 +1,28 @@
+package Players;
+
+import Cards.Card;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 
-abstract class Player {
+abstract public class Player {
     protected ArrayList<Card> hand;
     protected ArrayList<Integer> score;
     protected boolean playing;
     protected int playerNumber;
-    protected int money;
 
-    Player(){
+    public Player(){
         this.playerNumber = -1;
         handReset();
     }
 
-    Player(int playerNumber) {
+    public Player(int playerNumber) {
         this.playerNumber = playerNumber;
         handReset();
     }
 
-    void handReset() {
+    public void handReset() {
         score = new ArrayList<Integer>();
         score.add(0);
 
@@ -27,7 +30,7 @@ abstract class Player {
         playing = true;
     }
 
-    void addCard(Card c) {
+    public void addCard(Card c) {
         hand.add(c);
         updateCurrentScore(c);
     }
@@ -74,18 +77,18 @@ abstract class Player {
         return score;
     }
 
-    int getBestScore() {
+    public int getBestScore() {
         if (isBust()) {
             return 0;
         }
         return Collections.max(score);
     }
 
-    boolean isPlaying() {
+    public boolean isPlaying() {
         return playing;
     }
 
-    void setPlaying() {
+    public void setPlaying() {
         playing = false;
     }
 
@@ -96,7 +99,7 @@ abstract class Player {
         return false;
     }
 
-    int getPlayerNumber() {
+    public int getPlayerNumber() {
         return playerNumber;
     }
 
@@ -109,7 +112,7 @@ abstract class Player {
         return "Current Scores: " + getScore();
     }
 
-    abstract String getViewDeck();
+    abstract public String getViewDeck();
 
     protected ArrayList<Card> getHand() {
         return hand;

@@ -1,16 +1,18 @@
-class Bot extends Player{
+package Players;
 
-    Bot(int playerNumber) {
+public class Bot extends Player {
+
+    public Bot(int playerNumber) {
         super(playerNumber);
     }
 
-    String getViewDeck() {
+    public String getViewDeck() {
         return "\nBot " + playerNumber + "'s Cards: " + getHand() + "\n" + getViewDeckHelper();
 
     }
 
     //returns false if hold, true if draw(hit)
-    boolean getNextAction() {
+    public boolean getNextAction() {
         return simpleBot();
     }
 

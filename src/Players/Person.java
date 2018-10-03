@@ -1,10 +1,12 @@
-class Person extends Player{
+package Players;
 
-    Person(int playerNumber) {
+public class Person extends Player {
+
+    public Person(int playerNumber) {
         super(playerNumber);
     }
 
-    String getViewDeck() {
+    public String getViewDeck() {
         return "\nPerson " + playerNumber + "'s Cards: " + getHand() + "\n" + getViewDeckHelper();
 
     }

@@ -11,10 +11,10 @@ Design Choices:
 - Language: Java; I used Java in order to create this program as it is object-oriented and has static typing.
 This allowed me to quickly ensure that code was modular and limited breaking of abstraction barriers.
 
-- ArrayList for Person Hand, MainDeck: Both of these objects had changing sizes and thus an array would not be effective to use to store the objects.
+- ArrayList for Players.Person Hand, Cards.MainDeck: Both of these objects had changing sizes and thus an array would not be effective to use to store the objects.
 Additionally, a HashMap would also not be effective since I was simply iterating through each object rather than searching for a specific object.
 
-- Person/Dealer: I used one class to represent the Person and Dealer as there was significant re-use of code between the two objects.
+- Players.Person/Players.Dealer: I used one class to represent the Players.Person and Players.Dealer as there was significant re-use of code between the two objects.
 Furthermore, I did not use a parent class for both of these objects as I wanted to reduce the number of the total number of classes to maintain readibility.
 
 - Input Class: The Input class handled any type of user input to ensure that user's could not enter malformed input.
@@ -22,4 +22,4 @@ Furthermore, I did not use a parent class for both of these objects as I wanted 
 - Collections Shuffle: I used the Collections class in order to handle shuffling since it is part of java.utils.
 Thus, it is optimized for use with arraylists and other built-in Java data structures.
 
-- HashMap for Dictionary in Card.java Class: I used a HashMap to map the values of the symbols and suits to their names as HashMap optimizes "get" queries.
+- HashMap for Dictionary in Cards.Card.java Class: I used a HashMap to map the values of the symbols and suits to their names as HashMap optimizes "get" queries.

@@ -1,9 +1,13 @@
+package Cards;
+
+import Cards.Card;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
-class MainDeck extends ArrayList<Card> {
+public class MainDeck extends ArrayList<Card> {
 
-    MainDeck() {
+    public MainDeck() {
         createNewDeck();
     }
 
@@ -20,7 +24,7 @@ class MainDeck extends ArrayList<Card> {
         Collections.shuffle(this);
     }
 
-    Card drawCard() {
+    public Card drawCard() {
         if (this.size() > 0) {
             return this.remove(this.size() - 1);
         }

@@ -1,6 +1,8 @@
-class Dealer extends Player{
+package Players;
 
-    String getViewDeck() {
+public class Dealer extends Player {
+
+    public String getViewDeck() {
         String returnVal = "\nDealer's Cards: [xxx of xxx, ";
         for (int i = 1; i < hand.size(); i++) {
             returnVal += hand.get(i) + ", ";
@@ -9,7 +11,7 @@ class Dealer extends Player{
     }
 
     //returns false if hold, true if draw(hit)
-    boolean getNextAction() {
+    public boolean getNextAction() {
         return simpleBot();
     }
 

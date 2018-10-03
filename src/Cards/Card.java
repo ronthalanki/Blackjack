@@ -1,3 +1,5 @@
+package Cards;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,20 +42,12 @@ public class Card {
         dictSuits.put(4, "Spades");
     }
 
-    int getSymbol() {
+    public int getSymbol() {
         return symbol;
-    }
-
-    void setSymbol(int symbol) {
-        this.symbol = symbol;
     }
 
     int getSuit() {
         return suit;
-    }
-
-    void setSuit(int suit) {
-        this.suit = suit;
     }
 
     @Override

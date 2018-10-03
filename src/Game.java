@@ -1,3 +1,10 @@
+import Cards.Card;
+import Cards.MainDeck;
+import Players.Bot;
+import Players.Dealer;
+import Players.Person;
+import Players.Player;
+
 class Game {
     private MainDeck mainDeck;
     private Person[] people;
