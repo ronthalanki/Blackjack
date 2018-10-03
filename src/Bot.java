@@ -1,6 +1,8 @@
-class Person extends Player{
+import java.util.ArrayList;
 
-    Person(int playerNumber) {
+class Bot extends Player{
+
+    Bot(int playerNumber) {
         super(playerNumber);
     }
 
@@ -14,5 +16,17 @@ class Person extends Player{
     String getViewDeck() {
         return "\nPerson " + playerNumber + "'s Cards: " + hand + "\n" + getViewDeckHelper();
 
+    }
+
+    //returns false if hold, true if draw(hit)
+    boolean getNextAction() {
+        return simpleBot();
+    }
+
+    private boolean simpleBot() {
+        if (this.getBestScore() < 17) {
+            return true;
+        }
+        return false;
     }
 }

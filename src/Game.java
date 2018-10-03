@@ -1,16 +1,29 @@
 class Game {
     private MainDeck mainDeck;
     private Person[] people;
-    private Person dealer;
+    private Bot[] bots;
+    private Dealer dealer;
+    private Player[] players;
 
-    Game (int numPlayers) {
-        people = new Person[numPlayers];
-        dealer = new Person(-1);
+    Game (int numPlayers, int numBots) {
         mainDeck = new MainDeck();
+        people = new Person[numPlayers];
+        bots = new Bot[numBots];
+        dealer = new Dealer();
+        players = new Player[numPlayers + numBots + 1];
 
+        //initialize all of the arrays
         for (int i = 0; i < numPlayers; i++) {
             people[i] = new Person(i);
+            players[i] = people[i];
         }
+
+        for (int i = numPlayers; i < numPlayers + numBots; i++) {
+            bots[i - numPlayers] = new Bot(i);
+            players[i] = bots[i - numPlayers];
+        }
+
+        players[numPlayers + numBots] = dealer;
     }
 
     void play() {
@@ -21,20 +34,24 @@ class Game {
     }
 
     private void playRound() {
-        drawCard(dealer);
-        drawCard(dealer);
 
-        for (Person p: people) {
+        for (Player p: players) {
             drawCard(p);
             drawCard(p);
         }
 
+        for (Player p: players) {
+            System.out.println(p.isPlaying());
+        }
+
         for (Person p: people) {
+
             while (p.isPlaying()) {
                 spaceBetweenSections();
                 System.out.println("\nPerson " + p.getPlayerNumber() + " is playing");
 
                 printCurrentState();
+
                 System.out.println("\nPerson " + p.getPlayerNumber() + ": Do you want to hold (0) or draw (1)");
 
                 int x = Input.getIntegerInput(0,2);
@@ -53,7 +70,7 @@ class Game {
         }
 
         spaceBetweenSections();
-        System.out.println(dealer.getViewDealerDeck());
+        System.out.println(dealer.getViewDeck());
 
         for (Person p: people) {
             if (p.getBestScore() > dealer.getBestScore()) {
@@ -63,13 +80,13 @@ class Game {
 
         System.out.println("End Round");
 
-        dealer.reset();
+        dealer.handReset();
         for (Person p: people) {
-            p.reset();
+            p.handReset();
         }
     }
 
-    private void drawCard(Person p) {
+    private void drawCard(Player p) {
         Card c = mainDeck.drawCard();
         p.addCard(c);
     }

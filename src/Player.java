@@ -65,7 +65,9 @@ abstract class Player {
         Collections.sort(score);
 
         //checks if all possible scores are bust
-        playing = isBust();
+        if (isBust()) {
+            playing = false;
+        }
     }
 
     ArrayList<Integer> getScore() {
@@ -86,8 +88,12 @@ abstract class Player {
 
     boolean isBust() {
         if (score.size() == 0) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    int getPlayerNumber() {
+        return playerNumber;
     }
 }
