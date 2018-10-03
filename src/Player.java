@@ -75,6 +75,9 @@ abstract class Player {
     }
 
     int getBestScore() {
+        if (isBust()) {
+            return 0;
+        }
         return Collections.max(score);
     }
 
@@ -95,5 +98,20 @@ abstract class Player {
 
     int getPlayerNumber() {
         return playerNumber;
+    }
+
+    protected String getViewDeckHelper() {
+        if (isBust()) {
+            return "Current Score: Bust";
+        } else if (score.size() == 1) {
+            return "Current Score: " + getScore().get(0);
+        }
+        return "Current Scores: " + getScore();
+    }
+
+    abstract String getViewDeck();
+
+    protected ArrayList<Card> getHand() {
+        return hand;
     }
 }

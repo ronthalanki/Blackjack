@@ -1,20 +1,11 @@
-import java.util.ArrayList;
-
 class Bot extends Player{
 
     Bot(int playerNumber) {
         super(playerNumber);
     }
 
-    private String getViewDeckHelper() {
-        if (isBust()) {
-            return "Current Score: Bust";
-        }
-        return "Current Scores: " + getScore();
-    }
-
     String getViewDeck() {
-        return "\nPerson " + playerNumber + "'s Cards: " + hand + "\n" + getViewDeckHelper();
+        return "\nBot " + playerNumber + "'s Cards: " + getHand() + "\n" + getViewDeckHelper();
 
     }
 
@@ -24,7 +15,7 @@ class Bot extends Player{
     }
 
     private boolean simpleBot() {
-        if (this.getBestScore() < 17) {
+        if (this.getBestScore() < 17  && isPlaying()) {
             return true;
         }
         return false;

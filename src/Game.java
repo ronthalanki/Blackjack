@@ -34,18 +34,14 @@ class Game {
     }
 
     private void playRound() {
-
+        //inital setup
         for (Player p: players) {
             drawCard(p);
             drawCard(p);
         }
 
-        for (Player p: players) {
-            System.out.println(p.isPlaying());
-        }
-
+        //each player draws cards until they hold or bust
         for (Person p: people) {
-
             while (p.isPlaying()) {
                 spaceBetweenSections();
                 System.out.println("\nPerson " + p.getPlayerNumber() + " is playing");
@@ -65,23 +61,40 @@ class Game {
             spaceBetweenSections();
         }
 
-        while (dealer.getBestScore() < 17 & dealer.isPlaying()) {
+        for (Bot b: bots) {
+            while (b.getNextAction()) {
+                drawCard(b);
+            }
+        }
+
+        while (dealer.getNextAction()) {
             drawCard(dealer);
         }
 
         spaceBetweenSections();
-        System.out.println(dealer.getViewDeck());
 
+        //display all of the decks
+        for (Player p: players) {
+            System.out.println(p.getViewDeck());
+        }
+
+        //print the winners
+        System.out.println("\nWinners");
         for (Person p: people) {
             if (p.getBestScore() > dealer.getBestScore()) {
-                System.out.println("Person " + p.getPlayerNumber() + " wins!");
+                System.out.println("Player: " + p.getPlayerNumber() + " wins!");
             }
         }
 
-        System.out.println("End Round");
+        for (Bot b: bots) {
+            if (b.getBestScore() > dealer.getBestScore()) {
+                System.out.println("Bot " + b.getPlayerNumber() + " wins!");
+            }
+        }
 
-        dealer.handReset();
-        for (Person p: people) {
+        System.out.println("\nEnd Round");
+
+        for (Player p: players) {
             p.handReset();
         }
     }
@@ -92,8 +105,7 @@ class Game {
     }
 
     private void printCurrentState() {
-        System.out.println(dealer.getViewDeck());
-        for (Person p: people) {
+        for (Player p: players) {
             System.out.println(p.getViewDeck());
         }
     }

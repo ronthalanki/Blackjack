@@ -1,8 +1,11 @@
 class Dealer extends Player{
 
     String getViewDeck() {
-        return "\nDealer's Cards: " + hand.get(0);
-
+        String returnVal = "\nDealer's Cards: [xxx of xxx, ";
+        for (int i = 1; i < hand.size(); i++) {
+            returnVal += hand.get(i) + ", ";
+        }
+        return returnVal.substring(0,returnVal.length() - 2) + "]";
     }
 
     //returns false if hold, true if draw(hit)
@@ -11,7 +14,7 @@ class Dealer extends Player{
     }
 
     private boolean simpleBot() {
-        if (this.getBestScore() < 17) {
+        if (getBestScore() < 17 && isPlaying()) {
             return true;
         }
         return false;
