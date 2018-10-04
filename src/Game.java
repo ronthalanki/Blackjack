@@ -106,7 +106,7 @@ class Game {
         }
 
         //print the winners and calculate money stuff
-        System.out.println("\nWinners");
+        System.out.println("\nWinners:");
         for (Person p: people) {
             if (p.getBestScore() > dealer.getBestScore()) {
                 p.addMoney(p.getCurrentBet() * 2);
@@ -127,6 +127,7 @@ class Game {
             }
         }
 
+        System.out.println("\nCurrent Money: ");
         for (Player p: players) {
             System.out.println("Player " + p.getPlayerNumber() + ": " + p.getMoney());
         }
