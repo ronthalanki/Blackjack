@@ -31,6 +31,7 @@ class Game {
         }
 
         players[numPlayers + numBots] = dealer;
+        dealer.addMoney(99000); //dealer starts with 100k so that they never run out
     }
 
     void play() {
@@ -45,6 +46,25 @@ class Game {
         for (Player p: players) {
             drawCard(p);
             drawCard(p);
+        }
+
+        //setup betting
+        for (Person p: people) {
+            boolean betWorks = false;
+            while (!betWorks) {
+                System.out.println("Player " + p.getPlayerNumber() + ": Place a bet up to the total amount of money you have.");
+                System.out.println("Player " + p.getPlayerNumber() + " has " + p.getMoney());
+                int bet = Input.getIntegerInput(1, p.getMoney());
+                betWorks = p.setCurrentBet(bet);
+            }
+        }
+
+        for (Bot b: bots) {
+            if (b.getMoney() > 10) {
+                b.setCurrentBet(10);
+            } else {
+                b.setCurrentBet(b.getMoney());
+            }
         }
 
         //each player draws cards until they hold or bust
@@ -85,18 +105,30 @@ class Game {
             System.out.println(p.getViewDeck());
         }
 
-        //print the winners
+        //print the winners and calculate money stuff
         System.out.println("\nWinners");
         for (Person p: people) {
             if (p.getBestScore() > dealer.getBestScore()) {
-                System.out.println("Player: " + p.getPlayerNumber() + " wins!");
+                p.addMoney(p.getCurrentBet() * 2);
+                dealer.setCurrentBet(p.getCurrentBet());
+                System.out.println("Player " + p.getPlayerNumber() + " wins!");
+            } else {
+                dealer.addMoney(p.getCurrentBet());
             }
         }
 
         for (Bot b: bots) {
             if (b.getBestScore() > dealer.getBestScore()) {
+                b.addMoney(b.getCurrentBet() * 2);
+                dealer.setCurrentBet(b.getCurrentBet());
                 System.out.println("Bot " + b.getPlayerNumber() + " wins!");
+            } else {
+                dealer.addMoney(b.getCurrentBet());
             }
+        }
+
+        for (Player p: players) {
+            System.out.println("Player " + p.getPlayerNumber() + ": " + p.getMoney());
         }
 
         System.out.println("\nEnd Round");

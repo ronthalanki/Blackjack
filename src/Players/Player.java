@@ -11,15 +11,18 @@ abstract public class Player {
     protected ArrayList<Integer> score;
     protected boolean playing;
     protected int playerNumber;
+    protected int money;
+    protected int currentBet;
 
     public Player(){
-        this.playerNumber = -1;
-        handReset();
+        this(-1);
     }
 
     public Player(int playerNumber) {
         this.playerNumber = playerNumber;
         handReset();
+        money = 1000;
+        currentBet = 0;
     }
 
     public void handReset() {
@@ -116,5 +119,27 @@ abstract public class Player {
 
     protected ArrayList<Card> getHand() {
         return hand;
+    }
+
+    public int getCurrentBet() {
+        return currentBet;
+    }
+
+    public boolean setCurrentBet(int bet) {
+        if (money >= currentBet) {
+            currentBet = bet;
+            money -= currentBet;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void addMoney(int bet) {
+        money += bet;
     }
 }
