@@ -2,18 +2,18 @@ import Cards.*;
 import Players.*;
 
 class Game {
-    private MainDeck mainDeck;
+    private Deck deck;
     private Person[] people;
     private Bot[] bots;
     private Dealer dealer;
     private Player[] players;
 
     Game (int numPlayers, int numBots) {
-        mainDeck = new MainDeck();
+        deck = new Deck();
         people = new Person[numPlayers];
         bots = new Bot[numBots];
         dealer = new Dealer();
-        players = new Player[numPlayers + numBots + 1];
+        players = new Player[numPlayers + numBots];
 
         //initialize all of the arrays
         for (int i = 0; i < numPlayers; i++) {
@@ -25,51 +25,46 @@ class Game {
             bots[i - numPlayers] = new Bot(i);
             players[i] = bots[i - numPlayers];
         }
-
-        players[numPlayers + numBots] = dealer;
-        dealer.addMoney(99000); //dealer starts with 100k so that they never run out
     }
 
     void play() {
         do {
             playRound();
-            System.out.println("Press q to quit and any other key to play another round");
+            System.out.println("Press q to quit and p to play another round");
         } while(Input.scanForLetter('q'));
     }
 
     private void playRound() {
-        //inital setup
-        for (Player p: players) {
-            drawCard(p);
-            drawCard(p);
-        }
-
         //setup betting
         for (Person p: people) {
             boolean betWorks = false;
             while (!betWorks) {
-                System.out.println("Player " + p.getPlayerNumber() + ": Place a bet up to the total amount of money you have.");
-                System.out.println("Player " + p.getPlayerNumber() + " has " + p.getMoney());
+                System.out.println("Participant " + p.getPlayerNumber() + ": Place a bet up to the total amount of money you have.");
+                System.out.println("Participant " + p.getPlayerNumber() + " has " + p.getMoney());
                 int bet = Input.getIntegerInput(1, p.getMoney());
                 betWorks = p.setCurrentBet(bet);
             }
         }
 
         for (Bot b: bots) {
-            if (b.getMoney() > 10) {
-                b.setCurrentBet(10);
-            } else {
-                b.setCurrentBet(b.getMoney());
-            }
+            b.setCurrentBet();
         }
 
-        //each player draws cards until they hold or bust
+        //initial setup
+        for (Player p: players) {
+            drawCard(p);
+            drawCard(p);
+        }
+        drawCard(dealer);
+        drawCard(dealer);
+
+        //each participant draws cards until they hold or bust
         for (Person p: people) {
             while (p.isPlaying()) {
                 spaceBetweenSections();
                 System.out.println("\nPerson " + p.getPlayerNumber() + " is playing");
 
-                printCurrentState();
+                printCurrentState(p);
 
                 System.out.println("\nPerson " + p.getPlayerNumber() + ": Do you want to hold (0) or draw (1)");
 
@@ -78,19 +73,20 @@ class Game {
                 if (x == 1) {
                     drawCard(p);
                 } else if (x == 0) {
-                    p.setPlaying();
+                    p.stopPlaying();
                 }
             }
             spaceBetweenSections();
         }
 
         for (Bot b: bots) {
-            while (b.getNextAction()) {
+            while (b.getNextAction() && b.isPlaying()) {
                 drawCard(b);
             }
         }
 
-        while (dealer.getNextAction()) {
+        //TODO: move dealer.isPlaying() into dealer.getNextAction()
+        while (dealer.getNextAction() && dealer.isPlaying()) {
             drawCard(dealer);
         }
 
@@ -100,32 +96,29 @@ class Game {
         for (Player p: players) {
             System.out.println(p.getViewDeck());
         }
+        System.out.println(dealer.getFullViewDeck());
 
-        //print the winners and calculate money stuff
-        System.out.println("\nWinners:");
-        for (Person p: people) {
+        //print the winners and decide who wins/loses money
+        System.out.println("\nWinners: ");
+        boolean anyWinners = false;
+        for (Player p: players) {
             if (p.getBestScore() > dealer.getBestScore()) {
-                p.addMoney(p.getCurrentBet() * 2);
-                dealer.setCurrentBet(p.getCurrentBet());
-                System.out.println("Player " + p.getPlayerNumber() + " wins!");
-            } else {
-                dealer.addMoney(p.getCurrentBet());
+                p.addMoney(p.getCurrentBet());
+                dealer.transferMoney(- p.getCurrentBet());
+                System.out.println("Participant " + p.getPlayerNumber() + " wins!");
+                anyWinners = true;
+            } else if (p.getBestScore() < dealer.getBestScore()) { // do nothing if score is equal
+                p.addMoney(-p.getCurrentBet());
             }
         }
 
-        for (Bot b: bots) {
-            if (b.getBestScore() > dealer.getBestScore()) {
-                b.addMoney(b.getCurrentBet() * 2);
-                dealer.setCurrentBet(b.getCurrentBet());
-                System.out.println("Bot " + b.getPlayerNumber() + " wins!");
-            } else {
-                dealer.addMoney(b.getCurrentBet());
-            }
+        if (!anyWinners) {
+            System.out.println("None");
         }
 
         System.out.println("\nCurrent Money: ");
         for (Player p: players) {
-            System.out.println("Player " + p.getPlayerNumber() + ": " + p.getMoney());
+            System.out.println("Participant " + p.getPlayerNumber() + ": " + p.getMoney());
         }
 
         System.out.println("\nEnd Round");
@@ -133,17 +126,24 @@ class Game {
         for (Player p: players) {
             p.handReset();
         }
+        dealer.handReset();
+
+        System.out.println("Card Counting: " + bots[0].getCardCountingValue());
+        System.out.println("Number of Cards Left: " + deck.size());
     }
 
-    private void drawCard(Player p) {
-        Card c = mainDeck.drawCard();
+    private void drawCard(Participant p) {
+        Card c = deck.drawCard();
         p.addCard(c);
+
+        for (Bot b: bots) {
+            b.updateCardCountingValue(c.getValue());
+        }
     }
 
-    private void printCurrentState() {
-        for (Player p: players) {
-            System.out.println(p.getViewDeck());
-        }
+    private void printCurrentState(Player p) {
+        System.out.println(p.getViewDeck());
+        System.out.println(dealer.getViewDeck());
     }
 
     private void spaceBetweenSections() {

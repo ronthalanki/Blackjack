@@ -14,7 +14,7 @@ class Input {
                 }
                 validInput = true;
             } catch (Exception e) {
-                System.out.println("Please enter a number between " + low  + " and " + high);
+                System.out.println("Please enter a number between " + low  + " and " + (high - 1));
             }
         }
         return input;

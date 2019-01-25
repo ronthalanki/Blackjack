@@ -7,9 +7,9 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class Bot extends Player {
-
+    int cardCountingValue = 0;
     public Bot(int playerNumber) {
-        super(playerNumber);
+        super(playerNumber, 1000);
     }
 
     public String getViewDeck() {
@@ -19,9 +19,38 @@ public class Bot extends Player {
 
     //returns false if hold, true if draw(hit)
     public boolean getNextAction() {
-        return simpleBot();
+        return strategy17orHold();
     }
 
+    public void setCurrentBet() {
+        super.setCurrentBet(betBot());
+    }
+
+    private int betBot() {
+        if (this.getMoney() >= 20) {
+            return (int) (20 * (1 / (1 + Math.pow(Math.E,(-1 * cardCountingValue))))); //if cardCountingValue = 0, bet = 10
+        }
+        return this.getMoney();
+    }
+
+    public void updateCardCountingValue(int cardValue) {
+        if (cardValue == 1 || cardValue == 10) {
+            cardCountingValue -= 1;
+        } else if (cardValue <= 6) {
+            cardCountingValue += 1;
+        }
+    }
+
+    public int getCardCountingValue() {
+        return cardCountingValue;
+    }
+
+    private boolean strategy17orHold() {
+        if (getBestScore() < 17) {
+            return true;
+        }
+        return false;
+    }
     private boolean simpleBot() {
         if (isPlaying()) {
             String inline = "";
@@ -43,7 +72,6 @@ public class Bot extends Player {
                     inline += scan.nextLine();
                 }
                 scan.close();
-
 
                 JSONParser parse = new JSONParser();
                 JSONObject jsonObject = (JSONObject) parse.parse(inline);
